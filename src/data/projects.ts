@@ -32,6 +32,7 @@ export const projects: Project[] = [
     category: 'web',
     technologies: ['JavaScript', 'Database', 'UI/UX', 'System Design'],
     image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&h=300&fit=crop',
+    liveUrl: 'https://smart-student-system.vercel.app/login',
     githubUrl: 'https://github.com/sumithkumarsingh2626/smart-student-system',
     featured: true,
   },
