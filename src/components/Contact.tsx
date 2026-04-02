@@ -208,7 +208,7 @@ export function Contact() {
               </motion.a>
 
               <motion.a
-                href="tel:+918019723189"
+                href="tel:+919999999999"
                 className={cn(
                   'flex items-center gap-4 p-4 rounded-lg',
                   'bg-gray-800/50 border border-gray-700',
@@ -220,7 +220,7 @@ export function Contact() {
                 <Mail className="w-6 h-6 text-blue-400 flex-shrink-0" />
                 <div>
                   <p className="text-sm text-gray-400">Phone</p>
-                  <p className="text-white font-medium">+91 8019723189</p>
+                  <p className="text-white font-medium">+91 9999999999</p>
                 </div>
               </motion.a>
             </div>
