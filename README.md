@@ -2,6 +2,8 @@
 
 A stunning, modern personal portfolio website built with Next.js, React, Tailwind CSS, and Framer Motion. Features a sleek dark/light mode, smooth animations, and an Apple/Notion-inspired UI/UX design.
 
+website(https://portfolio-six-orcin-g54w0jxf9f.vercel.app/)
+
 ## ✨ Features
 
 ### 🎯 Core Sections
