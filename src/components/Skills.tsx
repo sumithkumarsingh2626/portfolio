@@ -98,16 +98,6 @@ function SkillGroup({ category, items }: SkillGroupProps) {
                   style={{
                     backgroundSize: '200% 100%',
                   }}
-                  animate={{
-                    backgroundPosition: ['0% 0%', '100% 0%', '0% 0%'],
-                  }}
-                  transition={{
-                    backgroundPosition: {
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: 'linear',
-                    },
-                  }}
                 />
               </div>
 
