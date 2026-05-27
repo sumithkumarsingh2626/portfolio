@@ -1,266 +1,223 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, Code2, Mail, Send } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { ArrowRight, CornerDownLeft } from 'lucide-react';
 import { cn } from '@/utils/cn';
-import { AnimatedText } from './AnimatedText';
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.3,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8 },
-  },
-};
-
-const floatingVariants = {
-  animate: {
-    y: [0, -20, 0],
-    transition: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
-  },
-};
+import { MiniTerminal } from '@/components/visual/MiniTerminal';
+import { profile } from '@/data/profile';
 
 export function Hero() {
-  const { scrollY } = useScroll();
-  const y = useTransform(scrollY, [0, 500], [0, 150]);
-  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const ambientRef = useRef<HTMLDivElement>(null);
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const sx = useSpring(mx, { stiffness: 160, damping: 26, mass: 0.4 });
+  const sy = useSpring(my, { stiffness: 160, damping: 26, mass: 0.4 });
+
+  const panelX = useTransform(sx, (v) => v * 18);
+  const panelY = useTransform(sy, (v) => v * 14);
+  const tiltX = useTransform(sy, (v) => v * -4);
+  const tiltY = useTransform(sx, (v) => v * 6);
+
+  useEffect(() => {
+    const el = ambientRef.current;
+    if (!el) return;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      gsap.to(el, {
+        x: 28,
+        y: 18,
+        scale: 1.06,
+        duration: 9,
+        ease: 'sine.inOut',
+        repeat: -1,
+        yoyo: true,
+      });
+    }, el);
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section
       id="home"
       className={cn(
         'relative min-h-screen flex items-center justify-center overflow-hidden',
-        'bg-linear-to-b from-black via-gray-900 to-black',
-        'pt-20 px-4 sm:px-6 lg:px-8'
+        'pt-24 px-4 sm:px-6 lg:px-8'
       )}
+      onMouseMove={(e) => {
+        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+        const nx = (e.clientX - rect.left) / rect.width - 0.5;
+        const ny = (e.clientY - rect.top) / rect.height - 0.5;
+        mx.set(nx);
+        my.set(ny);
+      }}
+      onMouseLeave={() => {
+        mx.set(0);
+        my.set(0);
+      }}
     >
-      {/* Animated background elements with 3D depth */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className={cn(
-            'absolute top-1/4 left-1/4 w-96 h-96',
-            'bg-blue-500/20 rounded-full blur-3xl',
-            'animate-pulse'
-          )}
-          animate={{
-            x: [0, 50, 0],
-            y: [0, 30, 0],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+      {/* Ambient gradients */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div
+          ref={ambientRef}
+          className="absolute -top-24 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(121,151,255,0.18),transparent_60%)] blur-3xl"
         />
-        <motion.div
-          className={cn(
-            'absolute bottom-1/4 right-1/4 w-96 h-96',
-            'bg-purple-500/20 rounded-full blur-3xl',
-            'animate-pulse'
-          )}
-          animate={{
-            x: [0, -50, 0],
-            y: [0, -30, 0],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-        />
-        <motion.div
-          className={cn(
-            'absolute top-1/2 right-1/3 w-72 h-72',
-            'bg-pink-500/10 rounded-full blur-3xl'
-          )}
-          animate={{
-            rotate: [0, 360],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-        />
+        <div className="absolute bottom-[-140px] right-[-120px] h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle_at_center,rgba(130,220,255,0.10),transparent_60%)] blur-3xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(255,255,255,0.06),transparent_35%),radial-gradient(circle_at_80%_40%,rgba(255,255,255,0.03),transparent_40%)]" />
       </div>
 
-      {/* Content with 3D perspective */}
+      {/* Floating glass panels */}
       <motion.div
-        style={{ y, opacity }}
-        className="relative z-10 max-w-4xl mx-auto text-center"
+        className="absolute inset-0 pointer-events-none"
+        style={{ rotateX: tiltX, rotateY: tiltY, transformStyle: 'preserve-3d' }}
       >
-        {/* Badge with scale animation */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          className="mb-8 inline-block"
+          className={cn(
+            'absolute left-[8%] top-[18%] w-[260px] h-[160px] rounded-2xl glass',
+            'hidden md:block'
+          )}
+          style={{ x: panelX, y: panelY }}
         >
-          <motion.div
-            className={cn(
-              'px-4 py-2 rounded-full',
-              'bg-gray-800/50 border border-gray-700',
-              'backdrop-blur-sm'
-            )}
-            whileHover={{
-              boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)',
-              borderColor: 'rgba(59, 130, 246, 0.5)',
-            }}
-          >
-            <span className="text-sm text-gray-300">
-              ✨ Welcome to my portfolio
-            </span>
-          </motion.div>
+          <div className="h-full w-full p-5 flex flex-col justify-between">
+            <div className="text-xs tracking-[0.2em] text-white/50">NOW</div>
+            <div className="text-sm text-white/85 leading-relaxed">
+              Building immersive UI systems with motion depth and clean architecture.
+            </div>
+          </div>
         </motion.div>
 
-        {/* Main heading with 3D text effect */}
-        <div className="mb-6 perspective">
-          <motion.h1
-            initial={{ opacity: 0, rotateX: -20, y: 30 }}
-            animate={{ opacity: 1, rotateX: 0, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className={cn(
-              'text-5xl sm:text-6xl lg:text-7xl font-bold',
-              'text-white leading-tight'
-            )}
-            style={{
-              transformStyle: 'preserve-3d' as any,
-            }}
-          >
-            Hi, I'm{' '}
-            <motion.span
-              className={cn(
-                'bg-linear-to-r from-blue-400 via-purple-500 to-pink-500',
-                'bg-clip-text text-transparent',
-                'inline-block'
-              )}
-              animate={{
-                backgroundPosition: ['0% center', '100% center', '0% center'],
-              }}
-              transition={{ duration: 5, repeat: Infinity }}
-              style={{
-                backgroundSize: '200% 200%',
-              }}
-            >
-              Sumith Kumar Singh
-            </motion.span>
-          </motion.h1>
-        </div>
-
-        {/* Animated subtitle */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="text-xl sm:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto"
+          className={cn(
+            'absolute right-[10%] bottom-[18%] w-[300px] h-[180px] rounded-2xl glass-strong',
+            'hidden md:block'
+          )}
+          style={{ x: useTransform(panelX, (v) => v * -0.8), y: useTransform(panelY, (v) => v * -0.8) }}
         >
-          <AnimatedText
-            text="Cybersecurity Expert | Software Development Engineer | BITS Vizag Student"
-            variant="words"
-            delay={0.4}
-          />
-        </motion.div>
-
-        {/* Description with character animation */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="text-lg text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed"
-        >
-          I'm passionate about building secure software and developing innovative solutions. 
-          Currently pursuing BTech at BITS Vizag with expertise in cybersecurity and software development.
-        </motion.p>
-
-        {/* CTA Buttons with 3D hover */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
-        >
-          <motion.button
-            className={cn(
-              'px-8 py-4 rounded-lg font-semibold',
-              'bg-linear-to-r from-blue-500 to-purple-600',
-              'text-white hover:shadow-lg hover:shadow-purple-500/50',
-              'transition-all duration-300 transform',
-              'flex items-center justify-center gap-2'
-            )}
-            whileHover={{
-              scale: 1.05,
-              rotateY: 5,
-            }}
-            whileTap={{ scale: 0.95 }}
-          >
-            View My Projects
-            <ArrowRight className="w-5 h-5" />
-          </motion.button>
-          <motion.button
-            className={cn(
-              'px-8 py-4 rounded-lg font-semibold',
-              'border border-gray-600 text-white',
-              'hover:bg-gray-800 transition-colors duration-300'
-            )}
-            whileHover={{
-              scale: 1.05,
-              borderColor: '#a78bfa',
-            }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Get in Touch
-          </motion.button>
-        </motion.div>
-
-        {/* Social Links with stagger */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-          className="flex justify-center gap-6"
-        >
-          {[Code2, Mail, Send].map((Icon, idx) => (
-            <motion.a
-              key={idx}
-              href="#"
-              className={cn(
-                'p-3 rounded-lg',
-                'bg-gray-800/50 border border-gray-700',
-                'text-gray-300 hover:text-white',
-                'hover:border-purple-500 hover:bg-purple-500/10',
-                'transition-all duration-300'
-              )}
-              whileHover={{
-                y: -8,
-                rotateZ: 10,
-                boxShadow: '0 20px 30px rgba(168, 85, 247, 0.3)',
-              }}
-              transition={{
-                delay: idx * 0.1,
-              }}
-            >
-              <Icon className="w-6 h-6" />
-            </motion.a>
-          ))}
-        </motion.div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          className="mt-16"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <div className="flex justify-center">
-            <div className="w-6 h-10 border-2 border-gray-600 rounded-full flex items-start justify-center p-2">
-              <motion.div
-                className="w-1 h-2 bg-linear-to-b from-purple-400 to-transparent rounded-full"
-                animate={{ y: [0, 6, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
+          <div className="h-full w-full p-5">
+            <div className="text-xs tracking-[0.2em] text-white/50 mb-3">FOCUS</div>
+            <div className="space-y-2 text-sm text-white/80">
+              <div className="flex items-center justify-between">
+                <span>Performance</span>
+                <span className="text-white/55">60 FPS</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Motion</span>
+                <span className="text-white/55">Physical</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Systems</span>
+                <span className="text-white/55">Scalable</span>
+              </div>
             </div>
           </div>
         </motion.div>
       </motion.div>
+
+      {/* Main content */}
+      <div className="relative z-10 max-w-4xl mx-auto text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          className="inline-flex items-center gap-2 rounded-full px-4 py-2 bg-white/5 border border-white/10 backdrop-blur-md"
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-white/60" />
+          <span className="text-xs tracking-[0.22em] text-white/70">
+            LUXURY-GRADE INTERACTIONS
+          </span>
+        </motion.div>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 22, filter: 'blur(8px)' }}
+          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          transition={{ duration: 1.1, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-8 text-5xl sm:text-6xl lg:text-7xl font-semibold tracking-tight text-white"
+        >
+          {profile.name}
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-4 text-base sm:text-lg text-white/70"
+        >
+          {profile.title}
+        </motion.p>
+
+        <motion.p
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.26, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-8 text-lg sm:text-xl text-white/65 leading-relaxed max-w-3xl mx-auto"
+        >
+          Building scalable web applications, deploying smartly with DevOps workflows, and engineering with a security mindset.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.34, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3"
+        >
+          <a
+            href="#projects"
+            className={cn(
+              'group inline-flex items-center justify-center gap-2',
+              'px-6 py-3 rounded-xl',
+              'bg-white text-black font-medium',
+              'shadow-[0_20px_60px_rgba(0,0,0,0.55)]',
+              'hover:translate-y-[-1px] transition-transform focus-ring'
+            )}
+          >
+            Explore Projects
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+          </a>
+          <a
+            href="#contact"
+            className={cn(
+              'inline-flex items-center justify-center gap-2',
+              'px-6 py-3 rounded-xl',
+              'bg-white/5 text-white/85 border border-white/12',
+              'hover:bg-white/8 hover:border-white/18 transition-colors focus-ring'
+            )}
+          >
+            Let’s Talk
+            <CornerDownLeft className="w-4 h-4 opacity-70" />
+          </a>
+        </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.0, delay: 0.55 }}
+          className="mt-10 text-xs tracking-[0.22em] text-white/45"
+        >
+          “{profile.tagline}”
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-10 max-w-2xl mx-auto"
+        >
+          <MiniTerminal />
+        </motion.div>
+
+        <motion.div
+          className="mt-14 flex items-center justify-center"
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <div className="h-10 w-6 rounded-full border border-white/20 flex items-start justify-center p-2">
+            <div className="h-2 w-1 rounded-full bg-white/40" />
+          </div>
+        </motion.div>
+      </div>
     </section>
   );
 }

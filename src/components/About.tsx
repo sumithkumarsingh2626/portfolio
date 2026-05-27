@@ -1,166 +1,162 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { ChevronRight } from 'lucide-react';
+import { useEffect, useMemo, useRef } from 'react';
+import { animate, motion, useInView, useMotionValue, useTransform } from 'framer-motion';
+import { timeline } from '@/data/experience';
+import { projects } from '@/data/projects';
 import { cn } from '@/utils/cn';
-import { Scroll3DCard } from './Scroll3DCard';
-import { AnimatedText } from './AnimatedText';
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
+function Counter({
+  value,
+  suffix,
+  label,
+}: {
+  value: number;
+  suffix?: string;
+  label: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { margin: '-20% 0px -20% 0px', once: true });
+  const mv = useMotionValue(0);
+  const rounded = useTransform(mv, (v) => Math.round(v));
+  const started = useRef(false);
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8 },
-  },
-};
-
-export function About() {
-  const stats = [
-    { number: '1+', label: 'Projects Completed' },
-    { number: '2+', label: 'Years in Tech' },
-    { number: '15+', label: 'Skills' },
-    { number: '1', label: 'Award' },
-  ];
+  useEffect(() => {
+    if (!inView || started.current) return;
+    started.current = true;
+    const controls = animate(mv, value, { duration: 1.25, ease: [0.22, 1, 0.36, 1] });
+    return () => controls.stop();
+  }, [inView, mv, value]);
 
   return (
-    <section
-      id="about"
-      className={cn(
-        'py-20 px-4 sm:px-6 lg:px-8',
-        'bg-linear-to-b from-black to-gray-900',
-        'relative overflow-hidden'
-      )}
-    >
-      {/* Background elements */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <motion.div
-          className="absolute top-0 left-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"
-          animate={{
-            y: [0, -50, 0],
-          }}
-          transition={{ duration: 10, repeat: Infinity }}
-        />
+    <div ref={ref} className={cn('rounded-2xl p-5 glass', 'relative overflow-hidden')}>
+      <div className="text-xs tracking-[0.24em] text-white/45">{label}</div>
+      <div className="mt-3 text-3xl sm:text-4xl font-semibold text-white/95">
+        <motion.span>{rounded}</motion.span>
+        {suffix ?? ''}
       </div>
+      <div className="absolute inset-x-0 bottom-0 h-px bg-white/10" />
+    </div>
+  );
+}
 
+export function About() {
+  const highlights = useMemo(
+    () => [
+      'Fullstack development with clean architecture',
+      'DevOps + deployment workflows (CI/CD mindset)',
+      'Cybersecurity interest: best practices + VAPT',
+      'Automation for faster, reliable delivery',
+      'Focused on UI/UX and premium interactions',
+    ],
+    []
+  );
+
+  const stats = useMemo(() => {
+    const tech = new Set(projects.flatMap((p) => p.technologies));
+    const categories = new Set(projects.map((p) => p.category));
+    const achievements = timeline.filter((t) => t.type === 'achievement').length;
+
+    return [
+      { value: projects.length, label: 'PROJECTS BUILT' },
+      { value: achievements, label: 'ACHIEVEMENTS' },
+      { value: tech.size, label: 'TECH USED' },
+      { value: categories.size, label: 'DOMAINS' },
+    ];
+  }, []);
+
+  return (
+    <section id="about" className={cn('relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden')}>
       <div className="max-w-6xl mx-auto relative z-10">
-        {/* Section Header */}
-        <Scroll3DCard delay={0}>
-          <motion.div className="mb-12">
-            <h2 className={cn(
-              'text-4xl sm:text-5xl font-bold mb-4',
-              'text-white'
-            )}>
-              About <span className={cn(
-                'bg-linear-to-r from-blue-400 to-purple-500',
-                'bg-clip-text text-transparent'
-              )}>Me</span>
-            </h2>
-            <div className="w-20 h-1 bg-linear-to-r from-blue-400 to-purple-500 rounded-full" />
-          </motion.div>
-        </Scroll3DCard>
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-120px' }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-12"
+        >
+          <div className="text-xs tracking-[0.28em] text-white/45">ABOUT</div>
+          <h2 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-white/95">
+            Calm, minimal — deeply engineered.
+          </h2>
+          <p className="mt-4 text-white/60 max-w-2xl leading-relaxed">
+            I build premium-feeling interfaces and reliable systems: motion that feels physical, visuals that feel cinematic, and code that stays maintainable.
+          </p>
+        </motion.div>
 
-        {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left - Bio with Scroll3D */}
-          <Scroll3DCard delay={0.1}>
-            <motion.div className="space-y-6">
-              <p className="text-lg text-gray-300 leading-relaxed">
-                I'm a motivated BTech student at BITS Vizag with a passion for cybersecurity
-                and software development. I'm dedicated to building secure, scalable applications
-                and exploring innovative solutions in the tech space.
-              </p>
-
-              <p className="text-lg text-gray-300 leading-relaxed">
-                As a Merit Student in the Cyber Security Hackathon, I've demonstrated my commitment
-                to learning and excellence. I bring strong technical skills combined with excellent
-                time management, leadership, and decision-making abilities to every project I undertake.
-              </p>
-
-              <div className="pt-4">
-                <h3 className="text-xl font-semibold text-white mb-4">What I'm passionate about:</h3>
-                <ul className="space-y-3">
-                  {[
-                    'Cybersecurity and secure software development',
-                    'Building scalable web applications',
-                    'Learning cutting-edge technologies',
-                    'Problem-solving and innovation',
-                    'Mentoring and continuous growth',
-                  ].map((item, idx) => (
-                    <motion.li
-                      key={idx}
-                      className="flex items-center gap-3 text-gray-300"
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.1 }}
-                      viewport={{ once: true }}
-                    >
-                      <ChevronRight className="w-5 h-5 text-blue-400 shrink-0" />
-                      {item}
-                    </motion.li>
-                  ))}
-                </ul>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+          {/* 3D info card */}
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-120px' }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className={cn('rounded-3xl glass-strong p-7 sm:p-8', 'relative overflow-hidden')}
+          >
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(121,151,255,0.18),transparent_40%),radial-gradient(circle_at_80%_60%,rgba(130,220,255,0.10),transparent_45%)] opacity-60" />
+            <div className="relative">
+              <div className="text-xs tracking-[0.28em] text-white/45">SUMITH KUMAR SINGH</div>
+              <div className="mt-3 text-2xl sm:text-3xl font-semibold text-white/95">
+                Fullstack Developer
               </div>
-            </motion.div>
-          </Scroll3DCard>
+              <div className="mt-2 text-white/65">CSE Student @ BITS Vizag • DevOps • Cybersecurity</div>
 
-          {/* Right - Stats with 3D cards */}
-          <Scroll3DCard delay={0.2}>
-            <motion.div className="grid grid-cols-2 gap-6">
-              {stats.map((stat, idx) => (
-                <motion.div
-                  key={idx}
-                  className={cn(
-                    'p-6 rounded-xl',
-                    'bg-linear-to-br from-gray-800/50 to-gray-900/50',
-                    'border border-gray-700/50',
-                    'backdrop-blur-sm',
-                    'relative overflow-hidden group'
-                  )}
-                  whileHover={{
-                    y: -15,
-                    borderColor: '#8b5cf6',
-                    boxShadow: '0 20px 40px rgba(168, 85, 247, 0.2)',
-                  }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {/* Animated background on hover */}
-                  <motion.div
-                    className="absolute inset-0 bg-linear-to-br from-purple-600/0 to-blue-600/0 group-hover:from-purple-600/10 group-hover:to-blue-600/10"
-                    transition={{ duration: 0.3 }}
-                  />
-
-                  <div className="relative z-10">
-                    <motion.div
-                      className={cn(
-                        'text-3xl sm:text-4xl font-bold mb-2',
-                        'bg-linear-to-r from-blue-400 to-purple-500',
-                        'bg-clip-text text-transparent'
-                      )}
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      whileInView={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: idx * 0.1 }}
-                      viewport={{ once: true }}
-                    >
-                      {stat.number}
-                    </motion.div>
-                    <p className="text-gray-400 text-sm">{stat.label}</p>
+              <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="rounded-2xl p-4 bg-white/4 border border-white/10">
+                  <div className="text-xs tracking-[0.24em] text-white/45">UI</div>
+                  <div className="mt-2 text-sm text-white/80 leading-relaxed">
+                    Motion systems, depth, polish
                   </div>
-                </motion.div>
-              ))}
+                </div>
+                <div className="rounded-2xl p-4 bg-white/4 border border-white/10">
+                  <div className="text-xs tracking-[0.24em] text-white/45">APIs</div>
+                  <div className="mt-2 text-sm text-white/80 leading-relaxed">
+                    Clean contracts, auth, data
+                  </div>
+                </div>
+                <div className="rounded-2xl p-4 bg-white/4 border border-white/10">
+                  <div className="text-xs tracking-[0.24em] text-white/45">AUTO</div>
+                  <div className="mt-2 text-sm text-white/80 leading-relaxed">
+                    Scrapers, alerts, pipelines
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8">
+                <div className="text-xs tracking-[0.28em] text-white/45">WHAT I’M BUILDING</div>
+                <p className="mt-3 text-white/70 leading-relaxed">
+                  A price drop alert tool and a full-stack student management system — focused on clean UX, scalable APIs, and reliable deployments.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Highlights + counters */}
+          <div className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-120px' }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              className={cn('rounded-3xl glass p-7 sm:p-8')}
+            >
+              <div className="text-xs tracking-[0.28em] text-white/45">HIGHLIGHTS</div>
+              <ul className="mt-5 space-y-3">
+                {highlights.map((item) => (
+                  <li key={item} className="text-white/70 leading-relaxed flex gap-3">
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-white/35 shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
             </motion.div>
-          </Scroll3DCard>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {stats.map((s) => (
+                <Counter key={s.label} value={s.value} label={s.label} />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

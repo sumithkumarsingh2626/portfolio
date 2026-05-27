@@ -59,12 +59,19 @@ website(https://portfolio-six-orcin-g54w0jxf9f.vercel.app/)
    npm install
    ```
 
-3. **Run development server**
+3. **Configure the contact form (optional)**
+   ```bash
+   cp .env.example .env.local
+   ```
+   - Set `RESEND_API_KEY` and `RESEND_FROM` in `.env.local`
+   - Optionally set `CONTACT_TO_EMAIL` (defaults to `src/data/profile.ts`)
+
+4. **Run development server**
    ```bash
    npm run dev
    ```
 
-4. **Open in browser**
+5. **Open in browser**
    - Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## 🚀 Getting Started

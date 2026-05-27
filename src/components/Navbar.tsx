@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import { ThemeToggle } from './ThemeToggle';
 import { cn } from '@/utils/cn';
 
 const navLinks = [
@@ -10,7 +9,7 @@ const navLinks = [
   { href: '#about', label: 'About' },
   { href: '#skills', label: 'Skills' },
   { href: '#projects', label: 'Projects' },
-  { href: '#experience', label: 'Experience' },
+  { href: '#experience', label: 'Timeline' },
   { href: '#contact', label: 'Contact' },
 ];
 
@@ -32,7 +31,7 @@ export function Navbar() {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         isScrolled
-          ? 'bg-black/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-800'
+          ? 'bg-black/40 backdrop-blur-xl border-b border-white/10'
           : 'bg-transparent'
       )}
     >
@@ -43,11 +42,11 @@ export function Navbar() {
             <a
               href="#home"
               className={cn(
-                'text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500',
-                'bg-clip-text text-transparent'
+                'text-lg sm:text-xl font-semibold tracking-wide',
+                'text-white/95 hover:text-white transition-colors'
               )}
             >
-              Portfolio
+              Sumith Kumar Singh
             </a>
           </div>
 
@@ -59,31 +58,39 @@ export function Navbar() {
                 href={link.href}
                 className={cn(
                   'text-sm font-medium transition-colors duration-300',
-                  'text-gray-300 hover:text-white',
-                  'relative after:absolute after:bottom-0 after:left-0 after:h-0.5',
-                  'after:w-0 after:bg-gradient-to-r after:from-blue-400 after:to-purple-500',
-                  'after:transition-all after:duration-300 hover:after:w-full'
+                  'text-white/70 hover:text-white',
+                  'relative after:absolute after:-bottom-2 after:left-0 after:h-px',
+                  'after:w-0 after:bg-white/40 after:transition-all after:duration-300 hover:after:w-full'
                 )}
               >
                 {link.label}
               </a>
             ))}
-            <div className="ml-4">
-              <ThemeToggle />
-            </div>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('app:openPalette'))}
+              className={cn(
+                'ml-2 px-3 py-2 rounded-lg text-xs font-medium',
+                'text-white/70 hover:text-white',
+                'bg-white/5 hover:bg-white/8 border border-white/10',
+                'transition-colors focus-ring'
+              )}
+              aria-label="Open command palette"
+            >
+              Ctrl K
+            </button>
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center space-x-4">
-            <ThemeToggle />
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-lg hover:bg-gray-800 transition-colors"
+              className="p-2 rounded-lg hover:bg-white/5 transition-colors focus-ring"
             >
               {isOpen ? (
-                <X className="w-6 h-6 text-white" />
+                <X className="w-6 h-6 text-white/90" />
               ) : (
-                <Menu className="w-6 h-6 text-white" />
+                <Menu className="w-6 h-6 text-white/90" />
               )}
             </button>
           </div>
@@ -96,12 +103,25 @@ export function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+                className="block px-4 py-2 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 {link.label}
               </a>
             ))}
+            <button
+              type="button"
+              onClick={() => {
+                setIsOpen(false);
+                window.dispatchEvent(new CustomEvent('app:openPalette'));
+              }}
+              className={cn(
+                'w-full text-left px-4 py-2 rounded-lg transition-colors',
+                'text-white/70 hover:text-white hover:bg-white/5'
+              )}
+            >
+              Open commands (Ctrl K)
+            </button>
           </div>
         )}
       </div>

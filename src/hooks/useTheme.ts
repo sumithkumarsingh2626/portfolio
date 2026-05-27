@@ -4,18 +4,18 @@ import { useEffect, useState } from 'react';
 
 export function useTheme() {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    // Get theme from localStorage or system preference
     const storedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const initialTheme = storedTheme || (prefersDark ? 'dark' : 'light');
-    
-    setTheme(initialTheme);
+
+    // External side effect only (no synchronous setState in effect body)
     document.documentElement.classList.toggle('dark', initialTheme === 'dark');
-  }, []);
+    if (initialTheme !== theme) {
+      queueMicrotask(() => setTheme(initialTheme));
+    }
+  }, [theme]);
 
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
@@ -24,5 +24,5 @@ export function useTheme() {
     document.documentElement.classList.toggle('dark', newTheme === 'dark');
   };
 
-  return { theme, toggleTheme, mounted };
+  return { theme, toggleTheme, mounted: true };
 }

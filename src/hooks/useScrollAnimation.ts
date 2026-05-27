@@ -7,20 +7,13 @@ interface ScrollAnimationOptions {
   rootMargin?: string;
 }
 
-export function useScrollAnimation(options: ScrollAnimationOptions = {}) {
+export function useScrollAnimation<T extends Element>(options: ScrollAnimationOptions = {}) {
   const { threshold = 0.1, rootMargin = '0px' } = options;
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<T | null>(null);
   const [isInView, setIsInView] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isMounted) return;
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -32,16 +25,13 @@ export function useScrollAnimation(options: ScrollAnimationOptions = {}) {
       { threshold, rootMargin }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
+    const node = ref.current;
+    if (node) observer.observe(node);
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
-      }
+      if (node) observer.unobserve(node);
     };
-  }, [threshold, rootMargin, isMounted]);
+  }, [threshold, rootMargin]);
 
   return { ref, isInView, hasAnimated };
 }

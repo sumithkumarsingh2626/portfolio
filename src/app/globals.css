@@ -2,15 +2,20 @@
 
 @layer base {
   :root {
-    --background: #0f0f0f;
-    --foreground: #ffffff;
-    color-scheme: dark;
-  }
+    --bg: #07080a;
+    --bg-soft: #0b0d12;
+    --fg: #f5f6f7;
+    --muted: #a6abb5;
 
-  html.light {
-    --background: #ffffff;
-    --foreground: #0f0f0f;
-    color-scheme: light;
+    --glass: rgba(255, 255, 255, 0.06);
+    --glass-strong: rgba(255, 255, 255, 0.09);
+    --hairline: rgba(255, 255, 255, 0.10);
+    --hairline-strong: rgba(255, 255, 255, 0.18);
+
+    --accent: 121 151 255; /* soft blue */
+    --accent2: 130 220 255; /* very subtle cyan */
+
+    color-scheme: dark;
   }
 
   * {
@@ -22,9 +27,9 @@
   }
 
   body {
-    background: var(--background);
-    color: var(--foreground);
-    font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     overflow-x: hidden;
   }
 
@@ -46,22 +51,48 @@
   }
 
   ::selection {
-    background: rgba(59, 130, 246, 0.3);
-    color: #fff;
+    background: rgba(var(--accent), 0.25);
+    color: var(--fg);
   }
 }
 
 @layer components {
-  .gradient-text {
-    @apply bg-linear-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent;
+  .glass {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.10),
+      rgba(255, 255, 255, 0.04)
+    );
+    border: 1px solid var(--hairline);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(16px);
   }
 
-  .glass-effect {
-    @apply backdrop-blur-lg bg-white/10 dark:bg-black/10;
+  .glass-strong {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.05)
+    );
+    border: 1px solid var(--hairline-strong);
+    box-shadow:
+      0 26px 80px rgba(0, 0, 0, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
   }
 
-  .glow-effect {
-    @apply shadow-lg shadow-purple-500/50;
+  .focus-ring {
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20;
+  }
+
+  .hairline {
+    border: 1px solid var(--hairline);
+  }
+
+  .text-muted {
+    color: var(--muted);
   }
 
   a {
@@ -71,54 +102,26 @@
   button {
     cursor: pointer;
   }
-
-  .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 focus:ring-offset-black dark:focus:ring-offset-white;
-  }
 }
 
 @layer utilities {
   .animate-float {
-    animation: float 3s ease-in-out infinite;
+    animation: float 5s ease-in-out infinite;
   }
 
-  .animate-pulse-glow {
-    animation: pulse-glow 3s ease-in-out infinite;
+  .animate-soft-breathe {
+    animation: soft-breathe 7s ease-in-out infinite;
   }
 
   .animate-shimmer {
-    animation: shimmer 2s infinite;
+    animation: shimmer 2.6s infinite;
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255, 255, 255, 0.2),
+      rgba(255, 255, 255, 0.12),
       transparent
     );
     background-size: 1000px 100%;
-  }
-
-  /* 3D Scroll Animations */
-  .animate-scroll-in {
-    animation: scrollIn 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-  }
-
-  .animate-scale-in {
-    animation: scaleIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-  }
-
-  .animate-flip-in {
-    animation: flipIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-    transform-style: preserve-3d;
-  }
-
-  /* Text animations */
-  .animate-text-glow {
-    animation: textGlow 3s ease-in-out infinite;
-  }
-
-  .animate-gradient-shift {
-    animation: gradientShift 3s ease infinite;
-    background-size: 200% 200%;
   }
 
   /* Parallax and depth effects */
@@ -130,6 +133,15 @@
   .perspective {
     perspective: 1200px;
   }
+
+  .atmo-shift {
+    animation: atmoShift 22s ease-in-out infinite;
+    background-size: 220% 220%;
+  }
+
+  .atmo-dust {
+    animation: atmoDust 28s linear infinite;
+  }
 }
 
 @keyframes float {
@@ -137,16 +149,16 @@
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-20px);
+    transform: translateY(-14px);
   }
 }
 
-@keyframes pulse-glow {
+@keyframes soft-breathe {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.7);
+    opacity: 0.55;
   }
   50% {
-    box-shadow: 0 0 0 10px rgba(168, 85, 247, 0);
+    opacity: 0.95;
   }
 }
 
@@ -159,85 +171,35 @@
   }
 }
 
-/* 3D Scroll Animations */
-@keyframes scrollIn {
-  from {
-    opacity: 0;
-    transform: translateY(100px) rotateX(-20deg);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) rotateX(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.8) translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-@keyframes flipIn {
-  from {
-    opacity: 0;
-    transform: rotateY(-90deg);
-  }
-  to {
-    opacity: 1;
-    transform: rotateY(0);
-  }
-}
-
-/* Text animations */
-@keyframes textGlow {
-  0%, 100% {
-    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0);
-  }
-  50% {
-    text-shadow: 0 0 20px rgba(59, 130, 246, 0.8), 0 0 30px rgba(168, 85, 247, 0.6);
-  }
-}
-
-@keyframes gradientShift {
+@keyframes atmoShift {
   0% {
-    background-position: 0% 50%;
+    background-position: 0% 40%;
   }
   50% {
-    background-position: 100% 50%;
+    background-position: 100% 60%;
   }
   100% {
-    background-position: 0% 50%;
+    background-position: 0% 40%;
   }
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
+@keyframes atmoDust {
+  from {
+    transform: translate3d(0, 0, 0);
   }
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
+  to {
+    transform: translate3d(-4%, -3%, 0);
   }
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
-  100% {
-    background-position: 1000px 0;
+
+  .animate-float,
+  .animate-soft-breathe,
+  .animate-shimmer {
+    animation: none !important;
   }
 }

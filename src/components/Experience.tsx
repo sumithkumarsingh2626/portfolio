@@ -4,150 +4,68 @@ import { motion } from 'framer-motion';
 import { timeline } from '@/data/experience';
 import { cn } from '@/utils/cn';
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.2,
-    },
-  },
-};
-
 const itemVariants = {
-  hidden: { opacity: 0, x: -50 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.8 },
-  },
+  hidden: { opacity: 0, y: 18 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] as const } },
 };
-
-interface TimelineItemProps {
-  item: (typeof timeline)[0];
-  isOdd: boolean;
-}
-
-function TimelineItemComponent({ item, isOdd }: TimelineItemProps) {
-  return (
-    <motion.div
-      variants={itemVariants}
-      className={cn(
-        'flex gap-8 sm:gap-12',
-        isOdd ? 'flex-row' : 'flex-row-reverse'
-      )}
-    >
-      {/* Left side - Content */}
-      <div className="flex-1">
-        <motion.div
-          className={cn(
-            'p-6 rounded-xl',
-            'bg-gradient-to-br from-gray-800/50 to-gray-900/50',
-            'border border-gray-700/50',
-            'hover:border-blue-500/50',
-            'transition-all duration-300'
-          )}
-          whileHover={{ y: -5 }}
-        >
-          <div className="flex items-start gap-3 mb-3">
-            <span className="text-2xl">{item.icon}</span>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold text-white">{item.title}</h3>
-              <p className="text-blue-400 font-semibold">{item.subtitle}</p>
-            </div>
-          </div>
-          <p className="text-gray-300 text-sm mb-4">{item.description}</p>
-          <p className="text-xs text-gray-500 font-medium">{item.date}</p>
-        </motion.div>
-      </div>
-
-      {/* Center - Timeline dot */}
-      <div className="flex flex-col items-center">
-        <motion.div
-          className={cn(
-            'w-6 h-6 rounded-full border-4',
-            'bg-gradient-to-r from-blue-500 to-purple-600',
-            'border-black'
-          )}
-          whileHover={{ scale: 1.2 }}
-        />
-        <div className="w-1 h-24 bg-gradient-to-b from-gray-600 to-transparent" />
-      </div>
-
-      {/* Right side - Empty space for desktop layout */}
-      <div className="flex-1" />
-    </motion.div>
-  );
-}
 
 export function Experience() {
   return (
-    <section
-      id="experience"
-      className={cn(
-        'py-20 px-4 sm:px-6 lg:px-8',
-        'bg-gradient-to-b from-gray-900 to-black'
-      )}
-    >
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
+    <section id="experience" className={cn('relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden')}>
+      <div className="max-w-4xl mx-auto relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true, margin: '-100px' }}
-          className="mb-16"
+          viewport={{ once: true, margin: '-120px' }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-12"
         >
-          <h2 className={cn(
-            'text-4xl sm:text-5xl font-bold mb-4',
-            'text-white'
-          )}>
-            Experience & <span className={cn(
-              'bg-gradient-to-r from-blue-400 to-purple-500',
-              'bg-clip-text text-transparent'
-            )}>Education</span>
+          <div className="text-xs tracking-[0.28em] text-white/45">TIMELINE</div>
+          <h2 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-white/95">
+            Experience & education.
           </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full" />
+          <p className="mt-4 text-white/60 leading-relaxed max-w-2xl">
+            A focused path: fundamentals, systems, and cinematic engineering.
+          </p>
         </motion.div>
 
-        {/* Timeline */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
-          className="space-y-8"
-        >
-          {timeline.map((item, idx) => (
-            <TimelineItemComponent
-              key={item.id}
-              item={item}
-              isOdd={idx % 2 === 0}
-            />
-          ))}
-        </motion.div>
+        <div className="relative pl-6 sm:pl-10">
+          {/* Line */}
+          <div className="absolute left-[10px] sm:left-[14px] top-0 bottom-0 w-px bg-white/12" />
+          <div className="absolute left-[10px] sm:left-[14px] top-0 h-24 w-px bg-[linear-gradient(180deg,rgba(121,151,255,0.45),transparent)]" />
 
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          viewport={{ once: true }}
-          className="mt-16 text-center"
-        >
-          <a
-            href="#"
-            className={cn(
-              'inline-block px-8 py-4 rounded-lg font-semibold',
-              'border border-gray-600 text-white',
-              'hover:border-blue-400 hover:text-blue-400',
-              'transition-all duration-300'
-            )}
-          >
-            Download Resume
-          </a>
-        </motion.div>
+          <div className="space-y-6">
+            {timeline.map((item) => (
+              <motion.div
+                key={item.id}
+                variants={itemVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: '-120px' }}
+                className="relative"
+              >
+                <div className="absolute left-[-1px] sm:left-[3px] top-7 h-2.5 w-2.5 rounded-full bg-white/70 shadow-[0_0_0_6px_rgba(255,255,255,0.06)]" />
+                <div className={cn('rounded-3xl glass p-7 sm:p-8')}>
+                  <div className="flex items-start justify-between gap-6">
+                    <div>
+                      <div className="text-xs tracking-[0.28em] text-white/45">
+                        {item.type.toUpperCase()}
+                      </div>
+                      <div className="mt-3 text-xl sm:text-2xl font-semibold text-white/95">
+                        {item.title}
+                      </div>
+                      <div className="mt-2 text-white/60">{item.subtitle}</div>
+                    </div>
+                    <div className="text-xs tracking-[0.22em] text-white/45 whitespace-nowrap">
+                      {item.date}
+                    </div>
+                  </div>
+                  <p className="mt-5 text-white/70 leading-relaxed">{item.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

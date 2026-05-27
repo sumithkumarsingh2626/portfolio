@@ -16,7 +16,7 @@ export function AnimatedText({
   variant = 'words',
   delay = 0,
 }: AnimatedTextProps) {
-  const { ref, hasAnimated } = useScrollAnimation({ threshold: 0.3 });
+  const { ref, hasAnimated } = useScrollAnimation<HTMLDivElement>({ threshold: 0.3 });
   const words = text.split(' ');
   const characters = text.split('');
 
@@ -42,7 +42,7 @@ export function AnimatedText({
 
   return (
     <motion.div
-      ref={ref as any}
+      ref={ref}
       variants={container}
       initial="hidden"
       animate={hasAnimated ? 'visible' : 'hidden'}

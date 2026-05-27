@@ -1,28 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Your Portfolio | Full Stack Developer & AI Enthusiast",
-  description: "Modern portfolio website showcasing projects, skills, and experience. Built with Next.js, React, and modern web technologies.",
-  keywords: "portfolio, web developer, full stack, react, next.js, ai",
-  creator: "Your Name",
+  title: "Sumith Kumar Singh ",
+  description:
+    "Premium cinematic developer portfolio for Sumith Kumar Singh — fullstack development, DevOps, automation, and cybersecurity-minded engineering.",
+  keywords:
+    "Sumith Kumar Singh, portfolio, fullstack developer, DevOps, cybersecurity, Next.js, React, TypeScript, automation",
+  creator: "Sumith Kumar Singh",
   openGraph: {
     type: "website",
-    url: "https://yourportfolio.com",
-    title: "Your Portfolio | Full Stack Developer",
-    description: "Premium portfolio showcasing my projects and skills",
-    siteName: "Your Portfolio",
+    title: "Sumith Kumar Singh",
+    description:
+      "Fullstack Developer • DevOps Enthusiast • Cybersecurity Passionate",
+    siteName: "Sumith Kumar Singh",
   },
 };
 
@@ -35,25 +27,10 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable}`}
+      className="font-sans"
     >
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                if (localStorage.getItem('theme') === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
-                  document.documentElement.classList.remove('dark');
-                } else {
-                  document.documentElement.classList.add('dark');
-                }
-              } catch (e) {}
-            `,
-          }}
-        />
-      </head>
-      <body className="bg-black text-white antialiased">
-        {children}
+      <body className="bg-[var(--bg)] text-[var(--fg)] antialiased">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

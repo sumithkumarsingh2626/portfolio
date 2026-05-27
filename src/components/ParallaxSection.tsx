@@ -12,7 +12,7 @@ interface ParallaxSectionProps {
 
 export function ParallaxSection({ children, className = '', offset = 50 }: ParallaxSectionProps) {
   const { scrollY } = useScroll();
-  const y = useTransform(scrollY, (value) => value * 0.5);
+  const y = useTransform(scrollY, [0, 900], [0, offset]);
 
   return (
     <motion.div

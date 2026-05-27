@@ -12,12 +12,12 @@ interface Scroll3DCardProps {
 }
 
 export function Scroll3DCard({ children, className = '', delay = 0 }: Scroll3DCardProps) {
-  const { ref, hasAnimated } = useScrollAnimation({ threshold: 0.2 });
+  const { ref, hasAnimated } = useScrollAnimation<HTMLDivElement>({ threshold: 0.2 });
   const internalRef = useRef<HTMLDivElement>(null);
 
   return (
     <motion.div
-      ref={ref as any}
+      ref={ref}
       initial={{
         opacity: 0,
         y: 100,

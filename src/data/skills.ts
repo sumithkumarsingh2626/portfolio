@@ -2,111 +2,38 @@ export interface Skill {
   name: string;
   category: 'frontend' | 'backend' | 'tools' | 'ai-ml';
   level: number; // 0-100
-  icon?: string;
 }
 
 export const skills: Skill[] = [
   // Frontend
-  {
-    name: 'HTML',
-    category: 'frontend',
-    level: 90,
-    icon: '🏗️',
-  },
-  {
-    name: 'CSS',
-    category: 'frontend',
-    level: 85,
-    icon: '🎨',
-  },
-  {
-    name: 'JavaScript',
-    category: 'frontend',
-    level: 85,
-    icon: '⚡',
-  },
-  {
-    name: 'React',
-    category: 'frontend',
-    level: 70,
-    icon: '⚛️',
-  },
-  {
-    name: 'Responsive Design',
-    category: 'frontend',
-    level: 80,
-    icon: '📱',
-  },
+  { name: 'React', category: 'frontend', level: 86 },
+  { name: 'Next.js', category: 'frontend', level: 78 },
+  { name: 'Tailwind CSS', category: 'frontend', level: 88 },
+  { name: 'Bootstrap', category: 'frontend', level: 80 },
+  { name: 'JavaScript', category: 'frontend', level: 86 },
+  { name: 'TypeScript', category: 'frontend', level: 72 },
+  { name: 'HTML', category: 'frontend', level: 90 },
+  { name: 'CSS', category: 'frontend', level: 86 },
 
-  // Backend
-  {
-    name: 'Python',
-    category: 'backend',
-    level: 75,
-    icon: '🐍',
-  },
-  {
-    name: 'Database Design',
-    category: 'backend',
-    level: 70,
-    icon: '🗄️',
-  },
-  {
-    name: 'REST APIs',
-    category: 'backend',
-    level: 65,
-    icon: '🔌',
-  },
-  {
-    name: 'Backend Development',
-    category: 'backend',
-    level: 70,
-    icon: '🖥️',
-  },
+  // Backend & Database
+  { name: 'Node.js', category: 'backend', level: 80 },
+  { name: 'Express.js', category: 'backend', level: 74 },
+  { name: 'MongoDB', category: 'backend', level: 76 },
+  { name: 'REST APIs', category: 'backend', level: 82 },
+  { name: 'Python', category: 'backend', level: 74 },
 
-  // Tools
-  {
-    name: 'Git & GitHub',
-    category: 'tools',
-    level: 85,
-    icon: '🐙',
-  },
-  {
-    name: 'Version Control',
-    category: 'tools',
-    level: 85,
-    icon: '📋',
-  },
-  {
-    name: 'Linux',
-    category: 'tools',
-    level: 75,
-    icon: '🐧',
-  },
-  {
-    name: 'Problem Solving',
-    category: 'tools',
-    level: 90,
-    icon: '🧩',
-  },
+  // DevOps & Tools
+  { name: 'Git', category: 'tools', level: 88 },
+  { name: 'GitHub', category: 'tools', level: 88 },
+  { name: 'Linux', category: 'tools', level: 76 },
+  { name: 'Vercel', category: 'tools', level: 78 },
+  { name: 'CI/CD', category: 'tools', level: 70 },
+  { name: 'DevOps', category: 'tools', level: 72 },
 
-  // Cybersecurity & AI/ML
-  {
-    name: 'Cybersecurity',
-    category: 'ai-ml',
-    level: 80,
-    icon: '🔐',
-  },
-  {
-    name: 'Network Security',
-    category: 'ai-ml',
-    level: 75,
-    icon: '🛡️',
-  },
-  {
-    name: 'Security Best Practices',
-    category: 'ai-ml',
-    level: 80,
-    icon: '🔒',
-  },
+  // Security / Automation
+  { name: 'Cybersecurity', category: 'ai-ml', level: 76 },
+  { name: 'VAPT', category: 'ai-ml', level: 70 },
+  { name: 'Ethical Hacking', category: 'ai-ml', level: 68 },
+  { name: 'Automation', category: 'ai-ml', level: 74 },
 ];
+
