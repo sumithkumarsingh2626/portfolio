@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Download, Menu, X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
 const navLinks = [
@@ -12,6 +12,8 @@ const navLinks = [
   { href: '#experience', label: 'Timeline' },
   { href: '#contact', label: 'Contact' },
 ];
+
+const resumeHref = '/Sumith_Kumar_Singh_Resume.docx';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -66,6 +68,18 @@ export function Navbar() {
                 {link.label}
               </a>
             ))}
+            <a
+              href={resumeHref}
+              download="Sumith_Kumar_Singh_Resume.docx"
+              className={cn(
+                'ml-2 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold',
+                'text-black bg-white hover:bg-white/90',
+                'transition-colors focus-ring'
+              )}
+            >
+              <Download className="w-3.5 h-3.5" />
+              Download Resume
+            </a>
             <button
               type="button"
               onClick={() => window.dispatchEvent(new CustomEvent('app:openPalette'))}
@@ -109,6 +123,18 @@ export function Navbar() {
                 {link.label}
               </a>
             ))}
+            <a
+              href={resumeHref}
+              download="Sumith_Kumar_Singh_Resume.docx"
+              className={cn(
+                'flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors',
+                'text-black bg-white hover:bg-white/90'
+              )}
+              onClick={() => setIsOpen(false)}
+            >
+              <Download className="w-4 h-4" />
+              Download Resume
+            </a>
             <button
               type="button"
               onClick={() => {
