@@ -118,17 +118,7 @@ export function Hero() {
 
       {/* Main content */}
       <div className="relative z-10 max-w-4xl mx-auto text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="inline-flex items-center gap-2 rounded-full px-4 py-2 bg-white/5 border border-white/10 backdrop-blur-md"
-        >
-          <span className="h-1.5 w-1.5 rounded-full bg-white/60" />
-          <span className="text-xs tracking-[0.22em] text-white/70">
-            LUXURY-GRADE INTERACTIONS
-          </span>
-        </motion.div>
+
 
         <motion.h1
           initial={{ opacity: 0, y: 22, filter: 'blur(8px)' }}
