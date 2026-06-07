@@ -13,7 +13,7 @@ const navLinks = [
   { href: '#contact', label: 'Contact' },
 ];
 
-const resumeHref = '/Sumith_Kumar_Singh_Resume.docx';
+const resumeHref = '/Sumith_Kumar_Singh26_Resume.docx';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -125,7 +125,7 @@ export function Navbar() {
             ))}
             <a
               href={resumeHref}
-              download="Sumith_Kumar_Singh_Resume.docx"
+              download="Sumith_Kumar_Singh26_Resume.docx"
               className={cn(
                 'flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors',
                 'text-black bg-white hover:bg-white/90'
